@@ -1,0 +1,19 @@
+#ambientes virtuais
+venv/
+env/
+
+#caches do python e testes
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+#caches das ferramentas de mutação que usamos/tentamos
+.mutatest_cache/
+.mutmut-cache
+
+.vscode/
+
+Thumbs.db
