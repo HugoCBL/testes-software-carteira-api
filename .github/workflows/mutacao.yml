@@ -1,0 +1,31 @@
+name: Pipeline de Testes e Mutação
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  testes-e-mutacao:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Baixar o código do repositório
+      uses: actions/checkout@v4
+
+    - name: 2. Configurar o Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+
+    - name: 3. Instalar dependências
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest mutmut
+
+    - name: 4. Rodar a Suíte TDD (Fase Verde)
+      run: |
+        python -m pytest
+
+    - name: 5. Injetar Falhas com Mutmut
+      run: |
+        mutmut run
