@@ -1,5 +1,5 @@
 import pytest
-from src.wallet import (
+from wallet import (
     Carteira, 
     ValorInvalidoError, 
     SaldoInsuficienteError, 
