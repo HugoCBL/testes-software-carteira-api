@@ -1,0 +1,46 @@
+2026-05-24 18:27:28,593: CLI Report:
+
+Mutatest diagnostic summary
+===========================
+ - Source location: C:\Users\Hugo\projeto_carteira\src
+ - Test commands: ['python', '-m', 'pytest']
+ - Mode: s
+ - Excluded files: []
+ - N locations input: 10
+ - Random seed: None
+
+Random sample details
+---------------------
+ - Total locations mutated: 2
+ - Total locations identified: 2
+ - Location sample coverage: 100.00 %
+
+
+Running time details
+--------------------
+ - Clean trial 1 run time: 0:00:00.752370
+ - Clean trial 2 run time: 0:00:00.721100
+ - Mutation trials total run time: 0:00:04.876123
+
+2026-05-24 18:27:28,593: Trial Summary Report:
+
+Overall mutation trial summary
+==============================
+ - DETECTED: 6
+ - TOTAL RUNS: 6
+ - RUN DATETIME: 2026-05-24 18:27:28.593600
+
+2026-05-24 18:27:28,593: Detected mutations:
+
+DETECTED
+--------
+ - src\wallet.py: (l: 7, c: 8) - mutation from AugAssign_Sub to AugAssign_Mult
+ - src\wallet.py: (l: 7, c: 8) - mutation from AugAssign_Sub to AugAssign_Add
+ - src\wallet.py: (l: 7, c: 8) - mutation from AugAssign_Sub to AugAssign_Div
+ - src\wallet.py: (l: 8, c: 8) - mutation from AugAssign_Add to AugAssign_Sub
+ - src\wallet.py: (l: 8, c: 8) - mutation from AugAssign_Add to AugAssign_Div
+ - src\wallet.py: (l: 8, c: 8) - mutation from AugAssign_Add to AugAssign_Mult
+
+2026-05-24 18:27:28,593: Timedout mutations:
+
+2026-05-24 18:27:28,594: Surviving mutations:
