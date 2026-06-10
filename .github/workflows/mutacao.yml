@@ -28,4 +28,4 @@ jobs:
 
     - name: 5. Injetar Falhas com Mutmut
       run: |
-        mutmut run --paths-to-mutate wallet.py
+        mutmut run
