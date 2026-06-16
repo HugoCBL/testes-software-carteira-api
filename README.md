@@ -30,27 +30,52 @@ A suíte de testes (`pytest`) foi construída com foco em **Análise de Valor Li
 
 ## 📖 Evolução do Experimento e Ameaças à Validade
 
-O desenvolvimento deste experimento ocorreu em duas fases distintas, evidenciando as limitações das ferramentas de análise estática e a necessidade de amadurecimento da arquitetura:
+O desenvolvimento deste experimento ocorreu em fases distintas, evidenciando as limitações das ferramentas de análise estática e a necessidade de amadurecimento da arquitetura:
 
-* **Fase 1 (Abordagem Inicial):** O experimento começou com uma lógica de transferência simples e a ferramenta `mutatest`. Obtivemos 100% de Mutation Score (6/6 mutantes mortos). No entanto, a análise revelou um falso positivo qualitativo: a ferramenta focava apenas em operadores matemáticos (`+`, `-`) e era cega para a manipulação de estruturas de dados secundárias (como o `.append` em listas de histórico). O código era simples demais para gerar mutantes complexos.
-* **Fase 2 (Refatoração para DDD e `mutmut`):** Para criar uma superfície de contato que realmente testasse a eficácia do TDD, a API foi reestruturada utilizando conceitos de *Domain-Driven Design* (DDD). Inserimos regras financeiras reais (taxas baseadas em limites e controle diário de saldo) e migramos para a ferramenta `mutmut`, que atua diretamente na Árvore de Sintaxe Abstrata (AST) de forma mais profunda e requer configuração de rotas específicas. 
+### Fase 1 (Abordagem Inicial)
 
-Essa evolução permitiu escalar o experimento de 6 para 72 mutantes, revelando gargalos lógicos que a primeira fase havia mascarado.
+O experimento começou com uma lógica de transferência simples e a ferramenta `mutatest`. Obtivemos 100% de Mutation Score (6/6 mutantes mortos). No entanto, a análise revelou um falso positivo qualitativo: a ferramenta focava apenas em operadores matemáticos (`+`, `-`) e era cega para a manipulação de estruturas de dados secundárias (como o `.append` em listas de histórico). O código era simples demais para gerar mutantes complexos.
 
-## 📊 Resultados do Experimento (Mutation Score)
+### Fase 2 - v1 (Refatoração para DDD e `mutmut`)
 
-O código foi submetido a uma esteira automatizada de injeção de falhas utilizando a ferramenta `mutmut` rodando em um ambiente Linux via **GitHub Actions**.
+Para criar uma superfície de contato que realmente testasse a eficácia do TDD, a API foi reestruturada utilizando conceitos de *Domain-Driven Design* (DDD). Inserimos regras financeiras reais e migramos para a ferramenta `mutmut`, que atua diretamente na Árvore de Sintaxe Abstrata (AST). O experimento escalou para 72 mutantes, revelando que testes de exceção simples não capturavam mutações textuais.
 
-### Placar Final
+### Fase 2 - v2 (Refinamento Estrito)
 
-* **Total de Mutantes Injetados:** 72
-* **Mutantes Mortos (Killed):** 44
-* **Mutantes Sobreviventes (Survived):** 28
-* **Mutation Score:** ~61.1%
+A partir da análise dos sobreviventes da etapa anterior, a suíte de testes foi blindada utilizando o parâmetro `match` do `pytest` para garantir a correspondência exata das strings de erro do domínio. Essa refatoração erradicou os mutantes de texto, elevando significativamente o placar final.
 
-### Análise
+## 📊 Histórico de Resultados (Mutation Score)
 
-A suíte de TDD demonstrou **100% de eficácia** ao barrar mutações críticas de operadores matemáticos e relacionais (`<`, `>`, `>=`, `+=`, `-=`) nas lógicas de saldo e limites. Os mutantes sobreviventes concentraram-se em áreas não-críticas para a integridade financeira, como a alteração exata de strings de mensagens de erro (*Exception messages*) e inicializações de variáveis padrão, evidenciando pontos onde a cobertura de testes pode ser expandida no futuro.
+O código foi submetido a uma esteira automatizada de injeção de falhas rodando em um ambiente Linux via **GitHub Actions**. Abaixo está o registro da evolução da nossa suíte de testes contra os mutantes:
+
+### 1️⃣ Fase 1: Ferramenta Básica (`mutatest`)
+
+* **Total Injetado:** 6
+* **Mortos (Killed):** 6
+* **Sobreviventes:** 0
+* **Mutation Score:** 100% *(Considerado um falso positivo devido à baixa complexidade arquitetural)*
+
+### 2️⃣ Fase 2 (v1): Arquitetura DDD sem amarração de strings (`mutmut`)
+
+* **Total Injetado:** 72
+* **Mortos (Killed):** 44
+* **Sobreviventes:** 28
+* **Mutation Score:** ~61.1% *(Revelou gargalos na validação de mensagens de erro)*
+
+### 3️⃣ Fase 2 (v2): Arquitetura DDD blindada (`mutmut` estrito) - Placar Final
+
+* **Total Injetado:** 72
+* **Mortos (Killed):** 54
+* **Sobreviventes:** 18
+* **Mutation Score:** 75.0%
+
+## 📈 Análise Conclusiva
+
+A suíte de TDD demonstrou **100% de eficácia** ao barrar mutações críticas de operadores matemáticos e relacionais (`<`, `>`, `>=`, `+=`, `-=`) nas lógicas de saldo e limites desde a primeira injeção do `mutmut`.
+
+A adoção posterior de asserções estritas nas exceções (`match="..."`) neutralizou com sucesso as mutações de string textuais, comprovando o ciclo *Red-Green-Refactor* do TDD.
+
+Os 18 mutantes que sobreviveram na versão final encontram-se isolados em inicializações padrão de variáveis internas, não representando ameaça à integridade financeira da aplicação.
 
 ## 🚀 Como Executar Localmente
 
@@ -59,12 +84,13 @@ A suíte de TDD demonstrou **100% de eficácia** ao barrar mutações críticas 
 ```bash
 git clone https://github.com/HugoCBL/testes-software-carteira-api.git
 cd testes-software-carteira-api
+
 python -m venv venv
 
-# No Windows:
+# Windows
 .\venv\Scripts\activate
 
-# No Linux/Mac:
+# Linux/Mac
 source venv/bin/activate
 ```
 
@@ -86,8 +112,21 @@ python -m pytest
 mutmut run
 ```
 
-> Nota: Para visualizar os detalhes de quais mutantes sobreviveram, utilize o comando `mutmut results`.
+> **Nota:** Para visualizar os detalhes dos mutantes sobreviventes, utilize:
+
+```bash
+mutmut results
+```
 
 ## ⚙️ Integração Contínua (CI/CD)
 
-Este repositório conta com uma pipeline automatizada configurada via **GitHub Actions** (`.github/workflows/mutacao.yml`). A cada novo `push` na branch principal, um servidor é provisionado para executar a validação TDD e gerar um novo relatório de mutação, garantindo a integridade contínua da arquitetura.
+Este repositório conta com uma pipeline automatizada configurada via **GitHub Actions** (`.github/workflows/mutacao.yml`).
+
+A cada novo `push` na branch principal, um ambiente Linux é provisionado automaticamente para:
+
+1. Instalar as dependências do projeto;
+2. Executar toda a suíte de testes TDD;
+3. Rodar a análise de mutação com `mutmut`;
+4. Gerar relatórios de cobertura e qualidade.
+
+Dessa forma, garante-se a integridade contínua da arquitetura e da lógica de negócio da aplicação.

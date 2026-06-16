@@ -1,9 +1,3 @@
-Run mutmut run
-/opt/hostedtoolcache/Python/3.13.13/x64/lib/python3.13/site-packages/mutmut/configuration.py:101: UserWarning: The config paths_to_mutate is deprecated. Please rename it to source_paths
-  warnings.warn("The config paths_to_mutate is deprecated. Please rename it to source_paths")
-/opt/hostedtoolcache/Python/3.13.13/x64/lib/python3.13/site-packages/mutmut/configuration.py:107: UserWarning: The config tests_dir is deprecated. Please add the path to pytest_add_cli_args_test_selection instead
-  warnings.warn(
-
 ⠋ Generating mutants
 ⠙ Generating mutants
 ⠹ Generating mutants
