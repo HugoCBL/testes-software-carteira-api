@@ -10,7 +10,7 @@ from wallet import (
 
 #TESTES DE INICIALIZAÇÃO E DEPÓSITO
 def test_inicializacao_carteira_nao_pode_ter_saldo_negativo():
-    with pytest.raises(ValorInvalidoError, match="O saldo inicial não pode ser negativo"):
+    with pytest.raises(ValorInvalidoError, match="O saldo inicial não pode ser negativo."):
         Carteira("Hugo", saldo_inicial=-10.0)
 
 def test_deposito_com_valor_valido_aumenta_saldo_e_registra_historico():
@@ -24,9 +24,10 @@ def test_deposito_com_valor_valido_aumenta_saldo_e_registra_historico():
 
 def test_deposito_com_valor_zero_ou_negativo_lanca_excecao():
     carteira = Carteira("Hugo")
-    with pytest.raises(ValorInvalidoError):
+    #adicionado match para capturar os mutantes de texto no depósito
+    with pytest.raises(ValorInvalidoError, match="O valor do depósito deve ser positivo."):
         carteira.depositar(0.0)
-    with pytest.raises(ValorInvalidoError):
+    with pytest.raises(ValorInvalidoError, match="O valor do depósito deve ser positivo."):
         carteira.depositar(-50.0)
 
 #TESTES DE TRANSFERÊNCIA - EXCEÇÕES
@@ -34,9 +35,10 @@ def test_transferencia_valor_zero_ou_negativo_lanca_excecao():
     origem = Carteira("Hugo", saldo_inicial=100.0)
     destino = Carteira("Loja", saldo_inicial=0.0)
     
-    with pytest.raises(ValorInvalidoError):
+    #match para capturar os mutantes de texto na transferência
+    with pytest.raises(ValorInvalidoError, match="O valor da transferência deve ser maior que zero."):
         origem.transferir(destino, 0.0)
-    with pytest.raises(ValorInvalidoError):
+    with pytest.raises(ValorInvalidoError, match="O valor da transferência deve ser maior que zero."):
         origem.transferir(destino, -10.0)
 
 def test_transferencia_acima_do_limite_diario_lanca_excecao():
@@ -44,15 +46,16 @@ def test_transferencia_acima_do_limite_diario_lanca_excecao():
     origem = Carteira("Hugo", saldo_inicial=10000.0, limite_diario=5000.0)
     destino = Carteira("Loja", saldo_inicial=0.0)
     
-    #tentando transferir 1 centavo acima do limite exato
-    with pytest.raises(LimiteExcedidoError):
+    #match para validar a mensagem de limite
+    with pytest.raises(LimiteExcedidoError, match="A transferência excede o limite diário de 5000.0."):
         origem.transferir(destino, 5000.01)
 
 def test_transferencia_sem_saldo_para_cobrir_valor_e_taxa_lanca_excecao():
     origem = Carteira("Hugo", saldo_inicial=100.0)
     destino = Carteira("Loja", saldo_inicial=0.0)
     
-    with pytest.raises(SaldoInsuficienteError):
+    #match para validar a mensagem de saldo
+    with pytest.raises(SaldoInsuficienteError, match="Saldo insuficiente para cobrir o valor e as taxas."):
         origem.transferir(destino, 100.0)
 
 #TESTES DE TRANSFERÊNCIA - REGRAS DE NEGÓCIO E LIMITES
